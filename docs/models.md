@@ -1,3 +1,9 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # Interactive models
 
 Both viewers are single self-contained HTML files with Three.js r160 bundled (MIT license, see [Threejs-LICENSE.txt](figures/Threejs-LICENSE.txt)). They need a WebGL-capable browser and make no network requests. Drag to rotate, scroll to zoom. All geometry is schematic and every assumption is stated inside the viewer; see [Instrument illustrations](15-instrument-illustrations.md) for the full list.
@@ -8,7 +14,7 @@ Mass separation in a folded ToF path, reflectron energy focusing (three tracer i
 
 [Open full screen](figures/Instrument-3D.html){ .md-button }
 
-<iframe class="model-frame" src="figures/Instrument-3D.html" title="Instrument viewer" loading="lazy" height="1150"></iframe>
+<iframe class="model-frame" src="figures/Instrument-3D.html" title="Instrument viewer" loading="lazy" height="1260"></iframe>
 
 ## Laser interaction and ablation-cell viewer
 
@@ -16,7 +22,7 @@ Absorption, spontaneous emission and stimulated emission, each paired with where
 
 [Open full screen](figures/Laser-3D.html){ .md-button }
 
-<iframe class="model-frame" src="figures/Laser-3D.html" title="Laser interaction viewer" loading="lazy" height="1000"></iframe>
+<iframe class="model-frame" src="figures/Laser-3D.html" title="Laser interaction viewer" loading="lazy" height="1200"></iframe>
 
 ## Static figures
 

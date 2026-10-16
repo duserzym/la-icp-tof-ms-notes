@@ -6,7 +6,7 @@
 main{padding:14px 18px}aside{padding:22px;background:#162333;border-left:1px solid #334559;overflow-wrap:anywhere}
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}button,select{background:#284158;border:1px solid #59778c;color:white;padding:8px 10px;border-radius:6px;cursor:pointer;font:inherit;font-size:14px}button:hover{background:#41617a}button.on{background:#41617a;border-color:#ffc46c}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pair.single{grid-template-columns:1fr}
-.view{position:relative;background:radial-gradient(ellipse,#22364c,#101b29);border:1px solid #334559;border-radius:8px;overflow:hidden;height:420px}.view canvas{display:block;width:100%;height:100%;touch-action:none}
+.view{position:relative;background:radial-gradient(ellipse,#22364c,#101b29);border:1px solid #334559;border-radius:8px;overflow:hidden;height:min(560px,70vh);min-height:420px}.pair.single .view{height:min(680px,80vh)}.view canvas{display:block;width:100%;height:100%;touch-action:none}
 .view h3{position:absolute;top:8px;left:12px;margin:0;font-size:15px;color:#8ed9e3;pointer-events:none}.view .cap{position:absolute;left:12px;right:12px;bottom:8px;font-size:13px;color:#c5dce9;pointer-events:none;background:#101b29cc;border-radius:5px;padding:4px 8px}
 .tag{position:absolute;font-size:11px;padding:2px 6px;border:1px solid #50737f;border-radius:5px;background:#101b29d9;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
 .transport{display:flex;gap:8px;align-items:center;margin:12px 0}.transport input{flex:1}
@@ -14,7 +14,7 @@ input[type=range]{width:100%;accent-color:#72dde1}h2{font-size:20px;margin:5px 0
 .viewbtns{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.numbers{font-variant-numeric:tabular-nums;color:#b9e7e9;font-size:14px}.range-label{display:block;margin:10px 0}
 #washoutPanel{background:#101b29;border:1px solid #334559;border-radius:8px;padding:10px 14px;margin-top:12px}#washoutPlot{width:100%;height:190px;display:block}
 .notes{padding:24px 28px;max-width:1250px;margin:auto}#error{color:#ffc48a;padding:20px;display:none}
-@media(max-width:900px){.tag{font-size:10px;white-space:normal;max-width:46%;text-align:center}.layout{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid #334559}.pair{grid-template-columns:1fr}.view{height:340px}header{padding:15px}main{padding:10px}}
+@media(max-width:900px){.tag{font-size:10px;white-space:normal;max-width:46%;text-align:center}.layout{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid #334559}.pair{grid-template-columns:1fr}.view,.pair.single .view{height:420px;min-height:0}header{padding:15px}main{padding:10px}}
 </style>
 <header><span class="badge">Geochemistry / source-grounded teaching model</span><h1>Laser–matter interaction and the ablation cell</h1><p>Three radiative processes, each paired with where it matters in laser ablation, and a two-volume ablation cell.</p></header>
 <div class="layout"><main>
@@ -73,10 +73,10 @@ function makeView(id){
 }
 function tag(v,group,text,x,y,z=0){const b=document.createElement('span');b.className='tag';b.textContent=text;v.el.appendChild(b);v.tags.push({b,p:new THREE.Vector3(x,y,z),group});return b}
 function place(v){const w=v.el.clientWidth,h=v.el.clientHeight;if(!w||!h)return;v.renderer.setSize(w,h,false);v.camera.aspect=w/h;v.camera.updateProjectionMatrix();
- const t=v.target,dd=v.dist*Math.max(1,1.25/v.camera.aspect);v.camera.position.set(t.x+dd*Math.sin(v.yaw)*Math.cos(v.pitch),t.y+dd*Math.sin(v.pitch),t.z+dd*Math.cos(v.yaw)*Math.cos(v.pitch));v.camera.lookAt(t);v.camera.updateMatrixWorld();
+ const t=v.target,dd=v.dist;v.camera.position.set(t.x+dd*Math.sin(v.yaw)*Math.cos(v.pitch),t.y+dd*Math.sin(v.pitch),t.z+dd*Math.cos(v.yaw)*Math.cos(v.pitch));v.camera.lookAt(t);v.camera.updateMatrixWorld();
  v.tags.forEach(({b,p,group})=>{const g=v.groups[group];if(!g||!g.visible){b.style.display='none';return}const q=p.clone().project(v.camera);b.style.display=Math.abs(q.x)>1.05||Math.abs(q.y)>1.05||q.z>1?'none':'block';const half=(b.offsetWidth||100)/2+4;b.style.left=Math.max(half,Math.min(w-half,(q.x+1)/2*w))+'px';b.style.top=((-q.y+1)/2*h)+'px'})}
 // Wave packet: sinusoid with Gaussian envelope, drawn as a line along +x of its own frame.
-function packet(color){const n=90,g=new THREE.BufferGeometry(),pos=new Float32Array(n*3);for(let i=0;i<n;i++){const x=(i/(n-1)-.5)*1.6,env=Math.exp(-((x/.45)**2));pos[i*3]=x;pos[i*3+1]=.28*env*Math.sin(x*22)}g.setAttribute('position',new THREE.BufferAttribute(pos,3));const o=new THREE.Line(g,new THREE.LineBasicMaterial({color}));const head=new THREE.Mesh(new THREE.SphereGeometry(.06,10,8),new THREE.MeshBasicMaterial({color}));head.position.x=.8;o.add(head);return o}
+function packet(color){const n=90,g=new THREE.BufferGeometry(),pos=new Float32Array(n*3);for(let i=0;i<n;i++){const x=(i/(n-1)-.5)*1.6,env=Math.exp(-((x/.45)**2));pos[i*3]=x;pos[i*3+1]=.28*env*Math.sin(x*22)}g.setAttribute('position',new THREE.BufferAttribute(pos,3));const o=new THREE.Line(g,new THREE.LineBasicMaterial({color}));const head=new THREE.Mesh(new THREE.SphereGeometry(.06,10,8),new THREE.MeshBasicMaterial({color}));head.position.x=.8;o.add(head);o.userData.noFit=true;return o}
 function setPacketPhase(o,phase){const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),env=Math.exp(-((x/.45)**2));p.setY(i,.28*env*Math.sin(x*22-phase))}p.needsUpdate=true}
 
 const A=makeView('viewA'),B=makeView('viewB');
@@ -153,7 +153,7 @@ tag(B,'cellCup','He jet (flat nozzle)',(pnx-3)*MM,pny*MM+FLOOR+.12);tag(B,'cellC
 tag(B,'cellConv','carrier in',-5.3,.4);tag(B,'cellConv','carrier out',5.3,.4);tag(B,'cellConv','ablation site, slow gas near the floor',0,-.95,.6);
 let cellView='cup';
 function setCellCamera(){const cup=cellView==='cup';$('viewCup').classList.toggle('on',cup);$('viewWide').classList.toggle('on',!cup);
- if(cup){B.target.set(.05,FLOOR+.12,0);B.dist=2.4;B.yaw=.6;B.pitch=.62}else{B.target.set(0,0,0);B.dist=15;B.yaw=.55;B.pitch=.45}}
+ if(cup){B.target.set(.05,FLOOR+.12,0);B.dist=2.4;B.yaw=.6;B.pitch=.62}else{B.target.set(0,0,0);B.dist=15;B.yaw=.55;B.pitch=.45}if(typeof refit==='function'&&mode==='cell')refit()}
 function updateCellTags(){const conv=$('conventional').checked,cup=cellView==='cup',on=mode==='cell';tagWide.visible=on&&!conv&&!cup;tagCup.visible=on&&!conv&&cup;tagConv.visible=on&&conv}
 function cellPhys(){const s=CELL.stats.twovol,c=CELL.stats.conv.massless,ms=v=>(v*1e3).toFixed(1),pc=v=>Math.round(v*100),q=CELL.flows_Lmin;
  return `<h3>Why it is fast</h3><p>Dispersion scales with the volume the aerosol must wash out of. The inner cup is a tiny fraction of the chamber, and the outer flush never carries the plume. With a dual concentric injector at the torch, single-pulse responses of a few ms are reported: 1.5 ms FWHM and 4.9 ms to 1% for one two-volume design. The course described the TwoVol3 response as about 1 ms; a vendor description gives under 1 ms with the dual concentric injector.</p>`+
@@ -248,7 +248,21 @@ function cavityStep(p){
  outBeam.visible=gain>0&&k>=2;outBeam.material.opacity=gain>0?Math.min(.5,.1+.1*k*gain):0;
  $('capB').textContent=gain>0?`Pass ${k+1}: ${alive} in-phase photons; each pass multiplies them. The output coupler releases part of the beam.`:'No inversion: photons are absorbed faster than they are copied, so the light dies out.';
 }
-function onResize(){place(A);place(B);if(mode==='cell')drawWashout()}new ResizeObserver(onResize).observe(document.body);
+
+// Frame every visible, non-transient object and visible label anchor of a view, keeping its view angle.
+function fitView(v,roots){
+ const pts=[],q=new THREE.Vector3(),skip=o=>{for(let x=o;x;x=x.parent){if(x.userData&&x.userData.noFit)return true;if(!x.visible)return true;if(x===v.scene)return false}return false};
+ roots.forEach(r=>{if(!r||!r.visible)return;r.updateMatrixWorld(true);r.traverse(o=>{if(!(o.isMesh||o.isLine||o.isPoints)||skip(o)||!o.geometry.attributes.position)return;const pos=o.geometry.attributes.position,step=Math.max(1,Math.floor(pos.count/60));for(let i=0;i<pos.count;i+=step)pts.push(q.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld).clone())})});
+ v.tags.forEach(({p,group})=>{const g=v.groups[group];if(g&&g.visible)pts.push(p.clone())});
+ if(!pts.length||!v.el.clientWidth)return;const box=new THREE.Box3().setFromPoints(pts);box.getCenter(v.target);v.dist=Math.max(1,box.getSize(q).length());
+ const right=new THREE.Vector3(),up=new THREE.Vector3();
+ for(let k=0;k<8;k++){place(v);let x0=9,x1=-9,y0=9,y1=-9;pts.forEach(p=>{q.copy(p).project(v.camera);x0=Math.min(x0,q.x);x1=Math.max(x1,q.x);y0=Math.min(y0,q.y);y1=Math.max(y1,q.y)});
+  const halfH=v.dist*Math.tan(v.camera.fov*Math.PI/360),halfW=halfH*v.camera.aspect;right.setFromMatrixColumn(v.camera.matrixWorld,0);up.setFromMatrixColumn(v.camera.matrixWorld,1);
+  v.target.addScaledVector(right,(x0+x1)/2*halfW).addScaledVector(up,(y0+y1)/2*halfH);v.dist*=Math.max((x1-x0)/2/.84,(y1-y0)/2/.8);}
+ place(v);
+}
+function refit(){if(mode!=='cell')fitView(A,[atom]);if(!(mode==='cell'&&cellView==='cup'))fitView(B,[B.groups[mode]])}
+function onResize(){place(A);place(B);refit();if(mode==='cell')drawWashout()}new ResizeObserver(onResize).observe(document.body);
 function animate(now){const dt=Math.min((now-last)/1000,.1);last=now;if(playing){const before=phase;phase=(phase+dt/(mode==='cell'?6:7))%1;if(phase<before)spontSeed++;$('time').value=Math.round(phase*1000)}
  atomStep(phase);if(mode==='absorption')sampleStep(phase);else if(mode==='spontaneous')plumeStep(phase);else if(mode==='stimulated')cavityStep(phase);else cellStep(phase);
  place(A);place(B);if(mode!=='cell')A.renderer.render(A.scene,A.camera);B.renderer.render(B.scene,B.camera);requestAnimationFrame(animate)}
