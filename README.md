@@ -22,6 +22,10 @@ mkdocs serve
 
 Figures 11 and 12 are regenerated with `python3 docs/figures/tof_arrival_leakage.py` (needs NumPy and Matplotlib).
 
+## License
+
+[MIT](LICENSE) for the notes, figures, scripts and viewers in this repository. Bundled Three.js r160 keeps its own MIT license ([`docs/figures/Threejs-LICENSE.txt`](docs/figures/Threejs-LICENSE.txt)); the NIST isotope table is U.S. Government data.
+
 ## Third-party material
 
 Manufacturer artwork (Nu Instruments / AMETEK) and historical journal figures are **linked, not reproduced**. Cited datasheet values, rate constants and published figures of merit belong to their sources. The notes are not an instrument operating procedure.
