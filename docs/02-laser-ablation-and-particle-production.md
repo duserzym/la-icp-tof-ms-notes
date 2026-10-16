@@ -37,7 +37,7 @@ $$g_1B_{12}=g_2B_{21},\qquad \frac{A_{21}}{B_{21}}=\frac{8\pi h\nu^3}{c^3}.$$
 
 ## Two-volume ablation cell (TwoVol3-type)
 
-**From the 2026 GSA Connects short course on ToF:** the demonstrated system uses a **TwoVol3** two-volume cell, described as giving a fast, about **1 ms** single-pulse response. The cell mode of [Laser-3D.html](figures/Laser-3D.html) shows the concept. It is a schematic, **not** manufacturer CAD, and its gas paths are drawn, not computed.
+**From the 2026 GSA Connects short course on ToF:** the demonstrated system uses a **TwoVol3** two-volume cell, described as giving a fast, about **1 ms** single-pulse response. The cell mode of [Laser-3D.html](figures/Laser-3D.html) shows the concept. It is a schematic, **not** manufacturer CAD. Its gas and particle paths are computed for that schematic geometry (see [the flow model below](#computed-flow-in-a-schematic-two-volume-cell)).
 
 **Why two volumes are fast.**
 
@@ -45,7 +45,7 @@ $$g_1B_{12}=g_2B_{21},\qquad \frac{A_{21}}{B_{21}}=\frac{8\pi h\nu^3}{c^3}.$$
 - **Inner cup.** A small cup sits just above the ablation site, under a window.
 - **Exit path.** A He jet sweeps the plume straight from the cup into a short, narrow exit.
 
-The aerosol never mixes into the big volume, so the volume it must wash out of is tiny. A conventional single-volume cell instead fills and recirculates; the compare toggle shows the difference.
+The aerosol never mixes into the big volume, so the volume it must wash out of is tiny. A conventional single-volume cell instead fills and recirculates; the compare toggle shows the computed difference.
 
 **Published numbers:**
 
@@ -62,7 +62,73 @@ The cell model includes this calculator. Long or sharply bent tubing still degra
 
 **What a ~1 ms response buys:** single pulses stay separated to the 1% level up to about 200 Hz (1/4.9 ms). That is what makes pulse-resolved imaging with a fast ToF possible: each laser pulse becomes one pixel without smearing into the next.
 
-**Later:** a computational flow model of the chamber (streamlines, recirculation, particle residence-time distribution) would replace the drawn paths with computed ones.
+### Computed flow in a schematic two-volume cell
+
+**Added 16 October 2026.** The cell mode now shows computed streamlines and particle paths instead of hand-drawn ones. They come from [cell_flow_model.py](figures/cell_flow_model.py), a short Python finite-volume solver (numpy, scipy, pyamg). One run takes about a minute on a laptop and writes [cell-flow-paths.json](figures/cell-flow-paths.json), the plot below, and the copy embedded in the viewer.
+
+**The geometry is a parametrized schematic, not ESL CAD.** Its dimensions are round numbers chosen to match the two-volume idea, not measurements of a TwoVol3:
+
+- **Outer chamber.** 100 × 70 × 22 mm, with its own 4 mm He flush inlet and outlet on the end walls (0.5 L min⁻¹).
+- **Inner cup.** 10 mm across and 1.5 mm from the sample to the window. Its rim leaves a 0.4 mm gap above the sample.
+- **Jet and exit.** A flat 3 × 0.6 mm He nozzle (0.8 L min⁻¹) sweeps across the ablation site, 0.5 mm above it, into a 1 mm ID exit tube that rises at 20°.
+
+**Method.**
+
+- **Flow.** Steady, laminar, incompressible He at 25 °C and 1 atm ($\nu=1.21\times10^{-4}$ m² s⁻¹) on a staggered grid. The cup has 0.2 mm cells; the chamber has 2 mm cells. Reynolds numbers are about 60 in the nozzle and 140 in the exit tube.
+- **Two separate solves, as in a two-volume cell.** One covers the cup, its jet and the surrounding gas at the rim (open boundaries). The other covers the outer flush, with the cup and its window column as a solid obstacle. A third run uses the same box as a conventional cell: 1 L min⁻¹ of carrier enters and leaves the big chamber through the same ports.
+- **Particles.** Particles are released at rest in the gas, uniformly in a 0.75 mm hemisphere over the site. This stands for the plume after it has stopped in the He. Massless tracers follow the gas. 0.1 and 1 μm particles (density 3000 kg m⁻³) feel Stokes drag with the Cunningham slip correction (He mean free path 0.19 μm) and gravity, and they stick if they touch a wall.
+- **Residence time.** Time from release to crossing a plane 2.5 mm into the exit tube, from 20 000 particles per size.
+
+**Result (cell only):**
+
+| | FWHM | 10% width | 1% width | Out by 60 ms |
+|---|---|---|---|---|
+| Computed, massless | 0.83 ms | 3.1 ms | 10.7 ms | 99% |
+| Computed, 0.1 μm | 0.81 ms | 3.1 ms | 10.4 ms | 99% |
+| Computed, 1 μm | 0.81 ms | 3.2 ms | 10.9 ms | 97% (3% deposited) |
+| Published two-volume + DCI, whole system | 1.5 ms | 3.2 ms | 4.9 ms | |
+
+![Computed residence-time distributions: the two-volume cup peaks about 1.2 ms after the pulse and is 99% out within tens of ms; the conventional cell has released only 15% after 60 s](figures/13-cell-residence-time.png)
+
+**How to read the comparison:**
+
+- **Same order of magnitude.** A swept small cup gives a ms response from fluid mechanics alone.
+- **FWHM.** The computed cell alone is narrower than the published whole-system value. That is expected: transfer tubing, the injector and the plasma add their own spread.
+- **1% width.** The computed 1% width is about twice the published one. The tail comes from gas circling in the cup beside the jet. The real cell evidently has less of this recirculation than this schematic cup.
+- **Particle size barely matters.** 0.1–1 μm particles follow the gas almost exactly: their relaxation times are 0.6 and 13 μs. Even in the exit tube, at 17 m s⁻¹ through 1 mm, the Stokes number of a 1 μm particle is only about 0.2.
+
+**What sets the width.** Running `python3 cell_flow_model.py --sweep` changes one choice at a time (massless particles, 10 000 per case):
+
+| Case | FWHM (ms) | 10% (ms) | 1% (ms) | Out by 60 ms | Lost under the rim |
+|---|---|---|---|---|---|
+| Default: flat jet 3 × 0.6 mm, 0.8 L min⁻¹, cup 1.5 mm tall | 0.80 | 3.2 | 10.7 | 99% | 0% |
+| Cup 2.0 mm tall | 1.09 | 4.1 | 17.7 | 100% | 0% |
+| Jet 0.5 L min⁻¹ | 1.59 | 6.3 | 22.1 | 95% | 0% |
+| Plume radius 0.4 mm | 1.82 | 5.6 | 39.2 | 100% | 0% |
+| Plume radius 1.2 mm | 0.58 | 2.1 | 7.9 | 97% | 0% |
+| Round 1 mm jet, sweeping low | 0.32 | 0.7 | 1.0 | 27% | 37% |
+| Round 1 mm jet, aimed down at the site | 0.13 | 0.5 | 16.1 | 57% | 31% |
+
+**Lessons from the sweep:**
+
+- **Cup volume and jet flow set the width.** A taller cup or less gas widens every level of the response.
+- **The jet must cover the plume.** A narrow round jet clears the middle of the plume in well under a ms and gives the sharpest peak. But it misses the edges of a 1.5 mm plume: in steady flow they are left in slow side eddies or pushed out under the rim into the outer chamber. In a real cell that material would show up as a slow tail, memory or lost signal rather than in the peak.
+- **The plume's height matters.** Material that stays within ~0.4 mm of the sample travels in the slow layer under the jet and arrives late.
+
+**Conventional cell of the same size.** The carrier jet crosses the chamber at mid-height, and the plume sits in gas moving a few mm s⁻¹ at the sample.
+
+- **Massless tracers.** 1% of the plume is out after 21 s and 10% after 41 s; only 15% has left by 60 s. For comparison, the chamber volume divided by the flow is 9 s.
+- **Particles with mass.** In that slow gas most 0.1 μm particles and all 1 μm particles settle onto the sample surface within a minute.
+
+Real conventional cells wash out faster than this (0.5–30 s, above): the plume's own momentum and heat, unsteady flow and diffusion all mix it. The steady laminar model is a slow bound, but it shows why the two-volume design matters: ms against tens of seconds, and no settling losses.
+
+**Assumptions and limits:**
+
+- **Geometry.** Schematic, symmetric about the jet axis (only half is solved), with staircase walls on a uniform grid. The outer chamber grid (2 mm) is coarse.
+- **Flow.** Steady and laminar. A jet at Re ~100 in a cavity may oscillate in reality, which would mix the cup more. The cup and outer chamber are solved separately; at the rim gap the cup sees still gas at fixed pressure.
+- **Plume.** No ablation dynamics: no shock, heating or expansion, and no vapour. Particles start at rest in the gas and do not change the flow. Brownian motion is left out: for 0.1 μm particles in He, $D\approx1.5\times10^{-9}$ m² s⁻¹, about 2 μm in 1 ms.
+- **Walls.** Particles with mass stick on contact. Tracers that numerically step into a staircase wall are put back into the gas.
+- **What is not included.** The exit tube beyond 2.5 mm, the transfer line, the injector and the plasma are not simulated. The tubing calculator above handles their delay separately.
 
 ## Energy density rather than pulse energy alone
 
