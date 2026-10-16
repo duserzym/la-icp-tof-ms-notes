@@ -1,0 +1,82 @@
+site_name: LA–ICP–ToF–MS study notes
+site_description: Physical fundamentals of laser ablation, plasma ionisation and time-of-flight mass spectrometry, with interactive Three.js models.
+site_url: https://duserzym.github.io/la-icp-tof-ms-notes/
+repo_url: https://github.com/duserzym/la-icp-tof-ms-notes
+repo_name: duserzym/la-icp-tof-ms-notes
+edit_uri: edit/main/docs/
+use_directory_urls: false
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: cyan
+      toggle: {icon: material/weather-night, name: Dark mode}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: cyan
+      toggle: {icon: material/weather-sunny, name: Light mode}
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - admonition
+  - attr_list
+  - md_in_html
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+extra_css:
+  - stylesheets/extra.css
+
+validation:
+  omitted_files: warn
+  absolute_links: info
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: index.md
+  - Interactive models: models.md
+  - Fundamentals:
+      - 01 The measurement chain: 01-the-measurement-chain.md
+      - 02 Laser ablation and particle production: 02-laser-ablation-and-particle-production.md
+      - 03 Aerosol transport and temporal resolution: 03-aerosol-transport-and-temporal-resolution.md
+      - 04 Plasma interface and ion optics: 04-plasma-interface-and-ion-optics.md
+      - 05 Time of flight from first principles: 05-time-of-flight-from-first-principles.md
+      - 06 Detectors, noise and interferences: 06-detectors-noise-and-interferences.md
+      - 07 Simultaneity, duty cycle and mapping: 07-simultaneity-duty-cycle-and-mapping.md
+  - Quantitative interpretation:
+      - 08 Calibration and matrix effects: 08-calibration-and-matrix-effects.md
+      - 09 Geochronology, petrochronology and rock magnetism: 09-geochronology-petrochronology-and-rock-magnetism.md
+      - 10 From raw data to a defensible result: 10-from-raw-data-to-a-defensible-result.md
+      - 11 Worked exercises: 11-worked-exercises.md
+      - 12 Glossary and equation sheet: 12-glossary-and-equation-sheet.md
+  - Extensions:
+      - 17 Sample introduction beyond laser ablation: 17-sample-introduction-beyond-laser-ablation.md
+      - 18 Tuning, mass drift and interference strategy: 18-tuning-mass-drift-and-interference-strategy.md
+      - 19 Single particles, aerosols and non-target screening: 19-single-particles-aerosols-and-non-target-screening.md
+      - 20 Mineral dates, ore systems and internal standards: 20-mineral-dates-ore-systems-and-internal-standards.md
+  - Reference:
+      - 14 Sources and reading guide: 14-sources-and-reading-guide.md
+      - 15 Instrument illustrations: 15-instrument-illustrations.md

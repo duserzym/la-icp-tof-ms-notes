@@ -1,0 +1,21 @@
+{
+  "three_revision": 160,
+  "component_labels": 10,
+  "control_checks": [
+    "pause",
+    "scrub",
+    "restart",
+    "bypass",
+    "voltage",
+    "close-up",
+    "reset",
+    "component selection"
+  ],
+  "drift_times_5kV_us": [
+    7.618392878751451,
+    14.611774527593095,
+    15.705719268272818
+  ],
+  "browser_visual_check": "Blocked: CUA does not allow file:// URLs. No browser workarounds attempted.",
+  "method": "Node VM with actual Three.js scene/math and mocked DOM/WebGL renderer; does not verify GPU rendering"
+}

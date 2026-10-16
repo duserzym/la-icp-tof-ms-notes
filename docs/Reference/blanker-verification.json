@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-10",
+  "three_revision": "160",
+  "component_labels": 11,
+  "control_checks": [
+    "blanker selection",
+    "default Ar/Ca rejection",
+    "opposite gap kicks",
+    "gate active at Ar arrival",
+    "wide window rejects K",
+    "offset leaks Ar",
+    "disabled gate passes all",
+    "center pulse",
+    "gate field turns off",
+    "reflectron preserved",
+    "instrument/bypass preserved",
+    "restart",
+    "mobile overflow"
+  ],
+  "model_assumptions": "Ideal 5 keV, nominal masses, point packets, instantaneous switching, artistic lateral trajectories; no electronics settling or exact-mass resolution",
+  "default_gate_arrivals_us": [
+    {
+      "ion": "³⁹K⁺",
+      "time": 1.9748417658131494
+    },
+    {
+      "ion": "⁴⁰Ar⁺",
+      "time": 2
+    },
+    {
+      "ion": "⁴⁰Ca⁺",
+      "time": 2
+    },
+    {
+      "ion": "⁵⁶Fe⁺",
+      "time": 2.3664319132398464
+    },
+    {
+      "ion": "Ar₂⁺",
+      "time": 2.82842712474619
+    },
+    {
+      "ion": "²⁰⁶Pb⁺",
+      "time": 4.538722287164087
+    }
+  ],
+  "browser_visual_check": "Playwright Chromium / WebGL rendered; desktop and mobile screenshots inspected",
+  "browser_errors": [],
+  "mobile_layout": {
+    "width": 390,
+    "scroll": 390,
+    "overlaps": false
+  }
+}

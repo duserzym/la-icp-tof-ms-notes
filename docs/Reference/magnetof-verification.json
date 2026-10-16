@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-10",
+  "browser": "Chromium / WebGL",
+  "visualCheck": "Desktop and 390px mobile cutaway and timing screenshots inspected",
+  "errors": [],
+  "controls": [
+    "mode/button",
+    "ion conversion",
+    "electron multiplication replay",
+    "exploded construction",
+    "field toggle",
+    "coincident pulse area at 25 GS/s",
+    "2 GS/s sampling phase bias",
+    "pulse width and separation",
+    "mobile width",
+    "analytic timing paths and return",
+    "inverse-B gyroperiod",
+    "analytic motion vs independent RK4 Lorentz integration",
+    "front/restart",
+    "reflectron and blanker regression"
+  ],
+  "math": {
+    "idealTwoIonArea": 2,
+    "highRateArea": 2,
+    "twoGSAreaAtPhase0": 2.1137912158193424,
+    "twoGSAreaAtPhaseHalf": 1.886214023139446,
+    "gyroperiodAt20mT": 1.7861933788705313,
+    "maxLorentzPositionErrorM": 8.874806139492272e-16
+  },
+  "assumptions": "Schematic geometry and paths; analytic uniform-field insight is separate from schematic cutaway; no installed-detector field solver, calibrated cascade replay transit time, dead-time model, noise, quantization or saturation"
+}
