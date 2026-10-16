@@ -11,7 +11,7 @@ main{padding:14px 18px}aside{padding:22px;background:#162333;border-left:1px sol
 .tag{position:absolute;font-size:11px;padding:2px 6px;border:1px solid #50737f;border-radius:5px;background:#101b29d9;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none}
 .transport{display:flex;gap:8px;align-items:center;margin:12px 0}.transport input{flex:1}
 input[type=range]{width:100%;accent-color:#72dde1}h2{font-size:20px;margin:5px 0 10px}h3{font-size:16px;color:#8ed9e3}p{margin:8px 0 14px}small{color:#adbdce;display:block}a{color:#85d9ef}
-.viewbtns{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.numbers{font-variant-numeric:tabular-nums;color:#b9e7e9;font-size:14px}.range-label{display:block;margin:10px 0}
+.viewbtns{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}#explodeControl small{margin:-4px 0 12px}.numbers{font-variant-numeric:tabular-nums;color:#b9e7e9;font-size:14px}.range-label{display:block;margin:10px 0}
 #washoutPanel{background:#101b29;border:1px solid #334559;border-radius:8px;padding:10px 14px;margin-top:12px}#washoutPlot{width:100%;height:190px;display:block}
 .notes{padding:24px 28px;max-width:1250px;margin:auto}#error{color:#ffc48a;padding:20px;display:none}
 @media(max-width:900px){.tag{font-size:10px;white-space:normal;max-width:46%;text-align:center}.layout{grid-template-columns:1fr}aside{border-left:0;border-top:1px solid #334559}.pair{grid-template-columns:1fr}.view,.pair.single .view{height:420px;min-height:0}header{padding:15px}main{padding:10px}}
@@ -38,7 +38,7 @@ input[type=range]{width:100%;accent-color:#72dde1}h2{font-size:20px;margin:5px 0
   <label class="range-label">Inner diameter: <b id="tubeDValue">1.0</b> mm<input id="tubeD" type="range" min="0.5" max="4" step="0.1" value="1"></label>
   <label class="range-label">Total gas flow: <b id="flowValue">1.0</b> L/min<input id="flow" type="range" min="0.3" max="2" step="0.05" value="1"></label>
   <div class="numbers" id="tubeNote"></div></div>
- <div id="physics"></div>
+ <div id="explodeControl" hidden><label class="range-label">Exploded view: <b id="explodeValue">0</b>%<input id="explode" type="range" min="0" max="100" value="0"></label><small id="explodeHint"></small></div><div id="physics"></div>
  <small id="caveat"></small>
 </aside></div>
 <div class="notes"><h2>What this model is and is not</h2><p>The atom views use a Bohr-style cartoon with two energy levels and wave packets drawn in false color: a 193 nm photon is ultraviolet and invisible. The instrument views are schematic. The cell view illustrates the two-volume concept (a small, fast-swept ablation volume inside a large sample chamber); it is <b>not</b> manufacturer CAD of the TwoVol3. Its gas and particle paths are computed for that schematic geometry by <a href="cell_flow_model.py">cell_flow_model.py</a> (steady laminar He on a staggered grid, particle tracking with Stokes drag); see note 02 for the assumptions.</p><p>Sources: Einstein coefficients, e.g. <a href="https://hyperphysics.gsu.edu/hbase/mod5.html" target="_blank" rel="noopener">HyperPhysics: quantum processes</a>; two-volume cell with integrated dual concentric injector, <a href="https://dspace.lboro.ac.uk/2134/19620" target="_blank" rel="noopener">Loughborough repository</a>; review of low-dispersion cells, <a href="https://digibuo.uniovi.es/dspace/bitstream/10651/52491/1/Critical%20evaluation.pdf" target="_blank" rel="noopener">critical evaluation (open PDF)</a>; vendor description of TwoVol3 with dual concentric injector, <a href="https://qbeam.ehi.msu.edu/instruments/laser-ablation-page" target="_blank" rel="noopener">instrument facility page</a>.</p></div>
@@ -168,6 +168,26 @@ function cellStep(p){
   const a=o.tr.geometry.attributes.position;for(let j=0;j<TRAIL-1;j++){const q=o.pts[Math.max(0,i-TRAIL+2+j)];a.setXYZ(j,q.x,q.y,q.z)}const m=o.m.position;a.setXYZ(TRAIL-1,m.x,m.y,m.z);a.needsUpdate=true});
  $('capB').textContent=conv?`Conventional cell, computed: t = ${t.toFixed(1)} s after the pulse. ${out} of ${parts.length} sample particles have left; the carrier jet crosses well above the sample.`:`Computed paths, t = ${t.toFixed(2)} ms after the pulse: ${out} of ${parts.length} sample particles are past the exit plane. Pink: He in the cup; blue: the separate outer flush.`;
 }
+
+// Exploded views: static parts move from their assembled positions along an offset; their tags follow.
+const EX={absorption:0,stimulated:0,cell:0},exParts={absorption:[],stimulated:[],cell:[]},exHints={
+ absorption:'Separates the lattice layers vertically so you can see how deep the pulse deposits energy. Raise the band gap and the heating reaches further down.',
+ stimulated:'Pulls the two mirrors off the ends and lifts the tube, exposing the gain medium between them.',
+ cell:'Lifts the outer enclosure and the inner cup with its window column, exposing the sample holder and the computed flow inside the cup.'};
+function exAdd(m,o,d){exParts[m].push({o,base:o.position.clone(),d})}
+function exTag(m,prefix,d){B.tags.forEach(t=>{if(t.b.textContent.startsWith(prefix))exParts[m].push({o:{position:t.p},base:t.p.clone(),d})})}
+exAdd('stimulated',hr,new THREE.Vector3(-1.6,0,0));exAdd('stimulated',oc,new THREE.Vector3(1.6,0,0));exAdd('stimulated',outBeam,new THREE.Vector3(1.6,0,0));exAdd('stimulated',tube,new THREE.Vector3(0,2.6,0));
+exTag('stimulated','high reflector',new THREE.Vector3(-1.6,0,0));exTag('stimulated','output coupler',new THREE.Vector3(1.6,0,0));exTag('stimulated','coherent beam',new THREE.Vector3(1.6,0,0));
+{const lift=new THREE.Vector3(0,CH*MM*1.5,0),cupLift=new THREE.Vector3(0,.9,0);
+ cellG.children.forEach(o=>{const g=o.geometry;if(!g)return;
+  if((o.isMesh&&g.type==='BoxGeometry')||o.isLineSegments)exAdd('cell',o,lift);
+  else if(o.isMesh&&g.type==='CylinderGeometry'&&Math.abs(g.parameters.height-.6)<1e-6)exAdd('cell',o,lift)});
+ [cupWall,lid,column].forEach(o=>exAdd('cell',o,cupLift));
+ exTag('cell','outer chamber',lift);exTag('cell','flush in',lift);exTag('cell','flush out',lift);exTag('cell','inner cup',cupLift);}
+function applyExplode(){for(const m in exParts)exParts[m].forEach(e=>e.o.position.copy(e.base).addScaledVector(e.d,EX[m]));lattice.forEach(d=>{d.o.position.copy(d.base);d.o.position.y-=d.depth*.65*EX.absorption})}
+function updateExplodeUI(){const has=mode in EX;$('explodeControl').hidden=!has;if(!has)return;const v=Math.round(EX[mode]*100);$('explode').value=v;$('explodeValue').textContent=v;$('explodeHint').textContent=exHints[mode]}
+$('explode').oninput=e=>{EX[mode]=Number(e.target.value)/100;$('explodeValue').textContent=e.target.value;applyExplode()};
+$('explode').onchange=()=>refit();
 // ---------------- state
 let mode='absorption',phase=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,last=performance.now(),spontSeed=1;
 const text={
@@ -178,7 +198,7 @@ const text={
  stimulated:{name:'Stimulated emission',a:'An incoming photon of the right energy triggers the excited electron to drop. The emitted photon is a copy: same direction, frequency, phase and polarization.',b:'In the laser cavity: with more atoms in the upper level than the lower one, each pass amplifies the light. Mirrors return it; the partially transmitting output coupler releases the coherent pulse.',
   phys:'<h3>Rate and gain</h3><p>Stimulated emission rate = B₂₁ ρ(ν) N₂, with g₁B₁₂ = g₂B₂₁. Net gain needs N₂/g₂ > N₁/g₁ (population inversion); otherwise absorption wins. Drag the slider below 0.5 to see the light die out.</p><h3>Why excimers invert easily</h3><p>In an ArF excimer laser the emitting ArF* state is bound, but the ground state is repulsive and falls apart in picoseconds. The lower level is always nearly empty, so inversion is automatic once ArF* is formed in the discharge.</p>'},
  cell:{name:'Two-volume ablation cell',a:'',b:'A small cup sits over the ablation site inside a large sample chamber. A He jet sweeps the plume across the site into a short, narrow exit, so the aerosol never mixes into the big volume. Gas and particle paths here are computed for a schematic geometry.',phys:''}};
-function setMode(m){mode=m;phase=0;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const t=text[m];$('name').textContent=t.name;$('explain').textContent=m==='cell'?t.b:'';$('physics').innerHTML=m==='cell'?cellPhys():t.phys;
+function setMode(m){mode=m;phase=0;updateExplodeUI();document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));const t=text[m];$('name').textContent=t.name;$('explain').textContent=m==='cell'?t.b:'';$('physics').innerHTML=m==='cell'?cellPhys():t.phys;
  const cell=m==='cell';$('pair').classList.toggle('single',cell);$('viewA').hidden=cell;$('washoutPanel').hidden=!cell;
  $('titleA').textContent='Atom view: '+t.name.toLowerCase();$('titleB').textContent={absorption:'At the sample surface',spontaneous:'In the ablation plume',stimulated:'In the laser cavity',cell:'Two-volume cell concept (schematic, not CAD)'}[m];
  $('absControls').hidden=m!=='absorption';$('stimControls').hidden=m!=='stimulated';$('cellControls').hidden=!cell;
@@ -233,7 +253,7 @@ function atomStep(p){
 }
 function sampleStep(p){
  const strong=Number($('gap').value)<6.42,depthScale=strong?1:3.5;beam.visible=p>.3&&p<.5;
- lattice.forEach(d=>{const inSpot=d.r<.95,heat=inSpot?Math.max(0,Math.min(1,(p-.38)/.1))*Math.exp(-d.depth/depthScale):0;d.o.material.color.setHex(heat>.5?HOT:heat>.15?0xd28a6a:0x7897a9);const gone=inSpot&&strong&&d.depth<1&&p>.5;d.o.visible=!gone;d.o.position.copy(d.base)});
+ lattice.forEach(d=>{const inSpot=d.r<.95,heat=inSpot?Math.max(0,Math.min(1,(p-.38)/.1))*Math.exp(-d.depth/depthScale):0;d.o.material.color.setHex(heat>.5?HOT:heat>.15?0xd28a6a:0x7897a9);const gone=inSpot&&strong&&d.depth<1&&p>.5;d.o.visible=!gone;d.o.position.copy(d.base);d.o.position.y-=d.depth*.65*EX.absorption});
  ejecta.forEach(e=>{const u=p-e.delay;e.o.visible=u>0&&(strong||e.speed>4);if(e.o.visible)e.o.position.set(0,0,0).addScaledVector(e.dir,u*e.speed*(strong?1:.5))});
  $('capB').textContent=p<.3?'Sample before the pulse.':p<.5?(strong?'Energy is absorbed in the top layers.':'Wide band gap: light penetrates deep, little is absorbed near the surface.'):strong?'Heated surface breaks apart: vapour and particles leave the crater.':'Weak, deeper absorption: less controlled removal, more fragments.';
 }
@@ -267,6 +287,6 @@ function animate(now){const dt=Math.min((now-last)/1000,.1);last=now;if(playing)
  atomStep(phase);if(mode==='absorption')sampleStep(phase);else if(mode==='spontaneous')plumeStep(phase);else if(mode==='stimulated')cavityStep(phase);else cellStep(phase);
  place(A);place(B);if(mode!=='cell')A.renderer.render(A.scene,A.camera);B.renderer.render(B.scene,B.camera);requestAnimationFrame(animate)}
 setMode('absorption');$('play').textContent=playing?'Pause':'Play';requestAnimationFrame(animate);
-window.viewerState=()=>({mode,cell:{view:cellView,lines:nLines,cupParticles:cupParts.length,convParticles:convParts.length,visibleParticles:($('conventional').checked?convParts:cupParts).filter(o=>o.m.visible).length,fwhm_ms:+(CELL.stats.twovol.massless.w50*1e3).toFixed(2)},phase,threeRevision:THREE.REVISION,gap:Number($('gap').value),inversion:Number($('inv').value),tubing:tubing(),conventional:$('conventional').checked,visiblePhotons:cavPhotons.filter(c=>c.p.visible).length,canvasA:[A.renderer.domElement.width,A.renderer.domElement.height],canvasB:[B.renderer.domElement.width,B.renderer.domElement.height]});
+window.viewerState=()=>({mode,explode:{...EX},cell:{view:cellView,lines:nLines,cupParticles:cupParts.length,convParticles:convParts.length,visibleParticles:($('conventional').checked?convParts:cupParts).filter(o=>o.m.visible).length,fwhm_ms:+(CELL.stats.twovol.massless.w50*1e3).toFixed(2)},phase,threeRevision:THREE.REVISION,gap:Number($('gap').value),inversion:Number($('inv').value),tubing:tubing(),conventional:$('conventional').checked,visiblePhotons:cavPhotons.filter(c=>c.p.visible).length,canvasA:[A.renderer.domElement.width,A.renderer.domElement.height],canvasB:[B.renderer.domElement.width,B.renderer.domElement.height]});
 
 </script></html>

@@ -6,7 +6,7 @@ hide:
 
 # Interactive models
 
-Both viewers are single self-contained HTML files with Three.js r160 bundled (MIT license, see [Threejs-LICENSE.txt](figures/Threejs-LICENSE.txt)). They need a WebGL-capable browser and make no network requests. Drag to rotate, scroll to zoom. All geometry is schematic and every assumption is stated inside the viewer; see [Instrument illustrations](15-instrument-illustrations.md) for the full list.
+Both viewers are single self-contained HTML files with Three.js r160 bundled (MIT license, see [Threejs-LICENSE.txt](figures/Threejs-LICENSE.txt)). They need a WebGL-capable browser and make no network requests. Drag to rotate, scroll to zoom, and use **Exploded view** where offered to pull assemblies apart and see inside ([what each one reveals](15-instrument-illustrations.md#exploded-views)). All geometry is schematic and every assumption is stated inside the viewer; see [Instrument illustrations](15-instrument-illustrations.md) for the full list.
 
 ## Instrument viewer
 
