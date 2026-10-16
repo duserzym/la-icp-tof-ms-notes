@@ -9,7 +9,7 @@ Instrument-specific details marked in the text come from the **2026 GSA Connects
 ## Interactive models
 
 - [`docs/figures/Instrument-3D.html`](docs/figures/Instrument-3D.html): folded ToF path, reflectron (tracers and noisy ensemble), H₂/He collision cell, argon blanker, MagneTOF detector.
-- [`docs/figures/Laser-3D.html`](docs/figures/Laser-3D.html): absorption, spontaneous and stimulated emission, two-volume ablation cell.
+- [`docs/figures/Laser-3D.html`](docs/figures/Laser-3D.html): absorption, spontaneous and stimulated emission, two-volume ablation cell with computed gas and particle paths.
 
 Both are self-contained (Three.js r160 bundled, MIT license in [`docs/figures/Threejs-LICENSE.txt`](docs/figures/Threejs-LICENSE.txt)) and open offline in any WebGL browser.
 
@@ -21,6 +21,8 @@ mkdocs serve
 ```
 
 Figures 11 and 12 are regenerated with `python3 docs/figures/tof_arrival_leakage.py` (needs NumPy and Matplotlib).
+
+The ablation-cell flow model, figure 13 and the cell paths embedded in `Laser-3D.html` are regenerated with `python3 docs/figures/cell_flow_model.py` (needs NumPy, SciPy, pyamg and Matplotlib; about a minute). Add `--sweep` for the design-sensitivity table in note 02.
 
 ## Third-party material
 
