@@ -1,3 +1,5 @@
+![LA-ICP-ToF-MS project icon](docs/assets/tof-3d.svg)
+
 # LA–ICP–ToF–MS study notes
 
 Study notes on the physical fundamentals of laser-ablation inductively coupled plasma time-of-flight mass spectrometry (LA–ICP–ToF–MS): laser–matter interaction, aerosol transport, plasma ionisation, time-of-flight separation, detectors, interferences, calibration and geochronological interpretation.
@@ -8,12 +10,27 @@ Instrument-specific details marked in the text come from the **2026 GSA Connects
 
 ## Interactive models
 
+**[Open the new explodable ToF 3D page](https://duserzym.github.io/la-icp-tof-ms-notes/3d/)**. Source is in [`viewer/`](viewer/), with the shared visual style and controls from the TIMS and LA-ICP-MS projects. The study notes and offline viewers remain available.
+
 - [`docs/figures/Instrument-3D.html`](docs/figures/Instrument-3D.html): folded ToF path, reflectron (tracers and noisy ensemble), H₂/He collision cell, argon blanker, MagneTOF detector.
 - [`docs/figures/Laser-3D.html`](docs/figures/Laser-3D.html): absorption, spontaneous and stimulated emission, two-volume ablation cell with computed gas and particle paths.
 
 Both are self-contained (Three.js r160 bundled, MIT license in [`docs/figures/Threejs-LICENSE.txt`](docs/figures/Threejs-LICENSE.txt)) and open offline in any WebGL browser.
 
 ## Build locally
+
+For the Vite 3D page (Node.js 22+):
+
+```bash
+cd viewer
+npm ci
+npm run dev
+npm test
+# Run mkdocs build from the repository root first, then:
+npm run build       # writes ../site/3d without replacing the notes
+```
+
+For the study notes:
 
 ```bash
 pip install -r requirements.txt

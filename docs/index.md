@@ -54,6 +54,8 @@ All numerical examples marked **synthetic** are teaching calculations, not measu
 
 ## Interactive models
 
+**New: [LA-ICP-ToF-MS 3D](https://duserzym.github.io/la-icp-tof-ms-notes/3d/)** — an explodable Vite / Three.js viewer in the same style as the TIMS and other mass-spec models: Nu Vitesse overview, timed mass separation, reflectron focusing, argon blanking, MagneTOF internals, and laser-to-data timing. The offline viewers below remain available.
+
 Two offline Three.js viewers accompany the notes: the [instrument viewer](figures/Instrument-3D.html) (mass separation, reflectron with a noisy ensemble, H₂/He collision cell, argon blanker, MagneTOF detector) and the [laser and ablation-cell viewer](figures/Laser-3D.html) (absorption, spontaneous and stimulated emission, two-volume cell). See [Interactive models](models.md).
 
 ## Visual reading route

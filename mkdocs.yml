@@ -8,6 +8,7 @@ use_directory_urls: false
 
 theme:
   name: material
+  favicon: assets/tof-3d.svg
   features:
     - navigation.sections
     - navigation.top
@@ -58,6 +59,7 @@ validation:
 nav:
   - Home: index.md
   - Interactive models: models.md
+  - Explodable ToF 3D: https://duserzym.github.io/la-icp-tof-ms-notes/3d/
   - Fundamentals:
       - 01 The measurement chain: 01-the-measurement-chain.md
       - 02 Laser ablation and particle production: 02-laser-ablation-and-particle-production.md

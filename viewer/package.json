@@ -1,0 +1,23 @@
+{
+  "name": "la-icp-tof-ms-3d",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Explodable Nu Vitesse ICP-ToF-MS teaching models, alongside the LA-ICP-ToF-MS study notes.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "screenshots": "node tools/verify.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "vite": "7.3.7",
+    "vitest": "3.2.7",
+    "playwright": "1.56.0"
+  },
+  "license": "MIT"
+}

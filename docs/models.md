@@ -6,6 +6,8 @@ hide:
 
 # Interactive models
 
+**New: [LA-ICP-ToF-MS 3D](https://duserzym.github.io/la-icp-tof-ms-notes/3d/)** — an explodable Vite / Three.js viewer in the same style as the TIMS and other mass-spec models: Nu Vitesse overview, timed mass separation, reflectron focusing, argon blanking, MagneTOF internals, and laser-to-data timing. The offline viewers below remain available.
+
 Both viewers are single self-contained HTML files with Three.js r160 bundled (MIT license, see [Threejs-LICENSE.txt](figures/Threejs-LICENSE.txt)). They need a WebGL-capable browser and make no network requests. Drag to rotate, scroll to zoom, and use **Exploded view** where offered to pull assemblies apart and see inside ([what each one reveals](15-instrument-illustrations.md#exploded-views)). All geometry is schematic and every assumption is stated inside the viewer; see [Instrument illustrations](15-instrument-illustrations.md) for the full list.
 
 ## Instrument viewer
