@@ -9,6 +9,7 @@ use_directory_urls: false
 theme:
   name: material
   favicon: assets/tof-3d.svg
+  logo: assets/tof-3d.svg
   features:
     - navigation.sections
     - navigation.top
